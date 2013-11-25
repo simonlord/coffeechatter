@@ -9,8 +9,8 @@ Tech
 +Dust.js - client side js templating 
 +Socket.io - server and client websocket impl 
 
-Dev setup
----------
+Dev setup (Not complete)
+------------------------
 
 1. Install node and add to your path
 2. Install required modules: npm install socket.io
