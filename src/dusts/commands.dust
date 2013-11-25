@@ -1,0 +1,7 @@
+<h2>Coffee commands<h2>
+<ul>
+{#commands}
+   <li><a class="btn" onclick="coffeecommand({commands[$idx]|js})">{name}</a></li>{~n}
+{/commands}
+</ul>
+

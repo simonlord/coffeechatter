@@ -1,0 +1,4 @@
+<blockquote>
+    <small>{nick} @ {when}</small>
+    <p><span class="label {class}">{name}</span></p>
+</blockquote>

@@ -1,0 +1,109 @@
+<html>
+<head>
+        <title>CoffeeChatter - v0.1</title>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
+        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.titlealert.min.js"></script>
+        <script type="text/javascript" src="/js/dust-core-2.2.0.js"></script>
+        <script type="text/javascript" src="/js/socket.io.js"></script>
+        <script type="text/javascript" src="/js/bootstrap/js/bootstrap.js"></script>
+        <script type="text/javascript" src="/js/compiled/coffeecommand.js"></script>
+        <script type="text/javascript" src="/js/compiled/msg.js"></script>
+        <script type="text/javascript" src="/js/compiled/commands.js"></script>
+        <script type="text/javascript" src="/js/compiled/userlist.js"></script>
+        <link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+</head>
+<body>
+<div class="container">
+        <div class="row">
+            <div class="span2" >
+                
+            </div>
+            <div class="span4">
+                <div class="panel-footer">
+                    <div class="input-group">
+                        <input id="msgInput" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                        <span class="input-group-btn">
+                            <button class="btn btn-warning btn-sm" id="send">
+                                Send</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="span2" >
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="span2" id="users">
+                
+            </div>
+               <div class="span4" id="messages"> 
+                
+               </div>
+            <div class="span2" id="commands">
+                
+            </div>
+        </div>
+</div>
+        <script>
+                var commands = {
+                    commands:[
+                        { id: 0, name: "I want coffee", type: "stmt", class:"label-info"},
+                        { id: 1, name: "Who wants coffee?", type: "question", class:"label-success"},
+                        { id: 2, name: "Coffee Brewing", type: "stmt", class:"label-warning"},
+                        { id: 3, name: "Coffee Ready", type: "stmt", class:"label-important"},
+                        { id: 4, name: "We are out of coffee", type: "stmt", class:"label-important"},
+                        { id: 5, name: "Lunch?", type: "stmt", class:"label-success"},
+                        { id: 6, name: "Foos?", type: "stmt", class:"label-success"}
+                    ]
+                };
+                dust.render("commands",commands,function(err,out){$('#commands').append(out)});
+              var username = prompt('What is your nickname?');
+              var socket = io.connect('http://adc2171612.us.oracle.com:7777');
+              socket.on('connect', function () {
+                socket.emit('adduser', username);
+              });
+              socket.on('coffeecommand', function (data) {
+                console.log(data);
+                dust.render("coffeecommand",data,function(err,out){$('#messages').prepend(out)});
+                if(username != data.nick){
+                    $.titleAlert('New Coffee Command');
+                }
+              });
+              socket.on('msg', function (data) {
+                console.log(data);
+                dust.render("msg",data,function(err,out){$('#messages').prepend(out)});
+              });
+              socket.on('updateusers', function (data) {
+                console.log(data);
+                var users = {usernames:data};
+                $('#users').empty();
+                dust.render("userlist",users,function(err,out){$('#users').append(out)});
+              });
+
+            $(function(){
+            // when the client clicks SEND
+            $('#send').click( function() {
+                var message = $('#msgInput').val();
+                $('#msgInput').val('');
+                // tell server to execute 'sendchat' and send along one parameter
+                socket.emit('msg', {msg:message});
+            });
+
+            // when the client hits ENTER on their keyboard
+            $('#msgInput').keypress(function(e) {
+                if(e.which == 13) {
+                    $(this).blur();
+                    $('#send').focus().click();
+                }
+            });
+        });
+        var coffeecommand = function(command){
+            
+            socket.emit('coffeecommand',command);
+        }
+        </script>
+</body>
+</html>

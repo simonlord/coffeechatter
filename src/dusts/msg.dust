@@ -1,0 +1,4 @@
+<blockquote>
+  <small>{nick} @ {when}</small>
+  <p>{msg}</p>
+</blockquote>
