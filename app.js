@@ -51,6 +51,10 @@ function currentTime(){
     var time = d.getHours() + ":" + d.getMinutes();
     return time;
 }
+function replaceUrlWithHtmlLinks(text) {
+    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(exp,"<a href='$1' target='_blank'>$1</a>"); 
+}
 io.sockets.on('connection', function (socket) {
   // first send history
   for(i=0;i<history.length;i++){
@@ -82,7 +86,8 @@ io.sockets.on('connection', function (socket) {
   });
   socket.on('msg', function (data) {
     console.log(data);
-    var item = {msg:data.msg, nick:socket.username, when:currentTime()};
+    var msg = replaceUrlWithHtmlLinks(data.msg);
+    var item = {msg:msg, nick:socket.username, when:currentTime()};
     io.sockets.emit('msg', item);
     addHistoryItem({type:'msg',payload:item});
   });

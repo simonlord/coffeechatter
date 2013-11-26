@@ -13,11 +13,7 @@ Dev setup
 ------------------------
 - Install node and add to your path
 - Setup proxy for npm: `npm config set proxy http://HOST:PORT` and `npm config set https-proxy http://HOST:PORT`
-- `npm install dustjs-linkedin `
-- `npm install dustjs-helpers`
-- `npm install socket.io`
-- `npm install dust-compiler`
-- `npm install debug`
+- `npm install dustjs-linkedin dustjs-helpers socket.io dust-compiler debug`
 - Compile the dust templates: 
 
 `node node_modules/dust-compiler/lib/dust-compiler.js -s src/dusts/ -d public/js/compiled/  --bootstrap`
