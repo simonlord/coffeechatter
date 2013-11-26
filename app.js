@@ -23,6 +23,23 @@ var app = http.createServer(function(rq,rs){
 var io = require('socket.io').listen(app);
 var users = [];
 var history = [];
+fs.readFile('.history',
+    function(err,data){
+        if(err){
+            console.log("Failed to load .history file:" + err);
+        } else {
+            history = JSON.parse(data);
+            console.log("Loaded history, size: " + history.length);
+        }
+    }
+);
+setInterval(function(){
+    fs.writeFile('.history',JSON.stringify(history),
+        function(err){
+            if(err)throw err;
+            console.log("Saved history");
+        });
+    }, 20000);
 function addHistoryItem(item){
     history.push(item);
     if(history.length > 20){
