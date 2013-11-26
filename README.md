@@ -11,12 +11,23 @@ Tech
 
 Dev setup (Not complete)
 ------------------------
+- Install node and add to your path
+- npm install dustjs-linkedin 
+- npm install dustjs-helpers
+- npm install socket.io
+- npm install dust-compiler
+- npm install debug
+- Compile the dust templates: 
 
-1. Install node and add to your path
-2. Install required modules: npm install socket.io
+node node_modules/dust-compiler/lib/dust-compiler.js -s src/dusts/ -d public/js/compiled/  --bootstrap
+
+- If you are developing the dust templates then you can leave the compiler in watch mode
+
+node node_modules/dust-compiler/lib/dust-compiler.js -s src/dusts/ -d public/js/compiled/
 
 
 Running
 -------
-
 node app.js
+
+open your web browser at http://HOST:7777/
