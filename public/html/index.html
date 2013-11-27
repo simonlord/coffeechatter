@@ -11,6 +11,7 @@
         <script type="text/javascript" src="/js/compiled/msg.js"></script>
         <script type="text/javascript" src="/js/compiled/commands.js"></script>
         <script type="text/javascript" src="/js/compiled/userlist.js"></script>
+        <script type="text/javascript" src="/js/compiled/voted.js"></script>
         <link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 
 </head>
@@ -51,12 +52,12 @@
                 var commands = {
                     commands:[
                         { id: 0, name: "I want coffee", type: "stmt", class:"label-info"},
-                        { id: 1, name: "Who wants coffee?", type: "question", class:"label-success"},
+                        { id: 1, name: "Who wants coffee?", type: "vote", class:"label-success", choices:['Yes','No']},
                         { id: 2, name: "Coffee Brewing", type: "stmt", class:"label-warning"},
                         { id: 3, name: "Coffee Ready", type: "stmt", class:"label-important"},
                         { id: 4, name: "We are out of coffee", type: "stmt", class:"label-important"},
-                        { id: 5, name: "Lunch?", type: "stmt", class:"label-success"},
-                        { id: 6, name: "Foos?", type: "stmt", class:"label-success"}
+                        { id: 5, name: "Lunch?", type: "vote", class:"label-success", choices:['Yes','No']},
+                        { id: 6, name: "Foos?", type: "vote", class:"label-success", choices:['Yes','No']}
                     ]
                 };
                 dust.render("commands",commands,function(err,out){$('#commands').append(out)});
@@ -83,6 +84,10 @@
                 $('#users').empty();
                 dust.render("userlist",users,function(err,out){$('#users').append(out)});
               });
+              socket.on('voted',function(data){
+                console.log(data);
+                dust.render("voted",data,function(err,out){$('#vote-responses-for-vote-'+data.voteid+'-'+data.vote).append(out)});
+              });
 
             $(function(){
             // when the client clicks SEND
@@ -102,9 +107,12 @@
             });
         });
         var coffeecommand = function(command){
-            
             socket.emit('coffeecommand',command);
-        }
+        };
+        var vote = function(voteid, vote){
+            console.log("voting for "+vote+ " on voteid "+voteid);
+            socket.emit('vote',{voteid:voteid, vote:vote});
+        };
         </script>
 </body>
 </html>

@@ -57,6 +57,15 @@ function replaceUrlWithHtmlLinks(text) {
     var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
     return text.replace(exp,"<a href='$1' target='_blank'>$1</a>"); 
 }
+function s4() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+             .toString(16)
+             .substring(1);
+}
+function guid() {
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+         s4() + '-' + s4() + s4() + s4();
+}
 io.sockets.on('connection', function (socket) {
   // first send history
   for(i=0;i<history.length;i++){
@@ -83,6 +92,9 @@ io.sockets.on('connection', function (socket) {
     console.log(data);
     data.nick = socket.username;
     data.when = currentTime();
+    if(data.type == 'vote'){
+        data.voteid = guid();
+    }
     io.sockets.emit('coffeecommand', data);
     addHistoryItem({type:'coffeecommand',payload:data});
   });
@@ -92,6 +104,12 @@ io.sockets.on('connection', function (socket) {
     var item = {msg:msg, nick:socket.username, when:currentTime()};
     io.sockets.emit('msg', item);
     addHistoryItem({type:'msg',payload:item});
+  });
+  socket.on('vote', function (data) {
+    console.log(data);
+    var item = {voteid: data.voteid, vote:data.vote, nick:socket.username, when:currentTime()};
+    io.sockets.emit('voted', item);
+    addHistoryItem({type:'voted',payload:item});
   });
 });
 
