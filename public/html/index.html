@@ -61,7 +61,8 @@
                 };
                 dust.render("commands",commands,function(err,out){$('#commands').append(out)});
               var username = prompt('What is your nickname?');
-              var socket = io.connect('http://adc2171612.us.oracle.com:7777');
+              var server = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":"+window.location.port : "");
+              var socket = io.connect(server);
               socket.on('connect', function () {
                 socket.emit('adduser', username);
               });
