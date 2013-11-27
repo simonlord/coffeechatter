@@ -48,7 +48,9 @@ function addHistoryItem(item){
 }
 function currentTime(){
     var d = new Date();
-    var time = d.getHours() + ":" + d.getMinutes();
+    var hours = d.getHours() < 10 ? "0"+d.getHours() : d.getHours();
+    var minutes = d.getMinutes() < 10 ? "0"+d.getMinutes() : d.getMinutes();
+    var time = hours + ":" + minutes;
     return time;
 }
 function replaceUrlWithHtmlLinks(text) {
