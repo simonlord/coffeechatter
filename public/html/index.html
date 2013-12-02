@@ -24,7 +24,7 @@
             <div class="span4">
                 <div class="panel-footer">
                     <div class="input-group">
-                        <input id="msgInput" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                        <input id="msgInput" type="text" class="form-control input-sm" placeholder="Type your message here..." autofocus/>
                         <span class="input-group-btn">
                             <button class="btn btn-warning btn-sm" id="send">
                                 Send</button>
@@ -94,6 +94,7 @@
             $('#send').click( function() {
                 var message = $('#msgInput').val();
                 $('#msgInput').val('');
+                $('#msgInput').focus();
                 // tell server to execute 'sendchat' and send along one parameter
                 socket.emit('msg', {msg:message});
             });
