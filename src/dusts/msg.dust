@@ -1,4 +1,10 @@
-<blockquote>
-  <small>{nick} @ {when}</small>
-  <p>{msg|s}</p>
-</blockquote>
+{?announce}
+  <blockquote>
+    <small>@ {when}: {nick} {announce}</small>
+  </blockquote>
+{:else}
+  <blockquote>
+    <small>@ {when}: {nick}</small>
+    <p>{msg|s}</p>
+  </blockquote>
+{/announce}

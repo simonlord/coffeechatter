@@ -62,6 +62,28 @@ function s4() {
              .toString(16)
              .substring(1);
 }
+// deal with irc like commands beginning with a /
+function handleIrcCommand(socket,data){
+    var msg = data.msg;
+    if(msg.substring(0,1) != '/'){
+	//no op
+	return;
+    }
+    
+    var bits = msg.split(" ");
+    var cmd = bits[0].substring(1,bits[0].length);
+    switch(cmd){
+       case "me":
+	   console.log("/me command received from " + socket.username + ": " + cmd);
+           var ann = msg.substring(msg.indexOf(' '),msg.length);
+           var item = {announce:ann, nick:socket.username, when:currentTime()};
+           io.sockets.emit('msg', item);
+           addHistoryItem({type:'msg',payload:item});    
+           break;
+      case "coffee":
+      case "foos":
+    } 
+}
 function guid() {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
          s4() + '-' + s4() + s4() + s4();
@@ -101,9 +123,13 @@ io.sockets.on('connection', function (socket) {
   socket.on('msg', function (data) {
     console.log(data);
     var msg = replaceUrlWithHtmlLinks(data.msg);
-    var item = {msg:msg, nick:socket.username, when:currentTime()};
-    io.sockets.emit('msg', item);
-    addHistoryItem({type:'msg',payload:item});
+    if(msg.substring(0,1) == '/'){
+	handleIrcCommand(socket,data);
+    }else{
+       var item = {msg:msg, nick:socket.username, when:currentTime()};
+       io.sockets.emit('msg', item);
+       addHistoryItem({type:'msg',payload:item});
+    }
   });
   socket.on('vote', function (data) {
     console.log(data);
