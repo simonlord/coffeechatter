@@ -124,7 +124,7 @@ io.sockets.on('connection', function (socket) {
     console.log(data);
     var msg = replaceUrlWithHtmlLinks(data.msg);
     if(msg.substring(0,1) == '/'){
-	handleIrcCommand(socket,data);
+	     handleIrcCommand(socket,data);
     }else{
        var item = {msg:msg, nick:socket.username, when:currentTime()};
        io.sockets.emit('msg', item);
