@@ -98,14 +98,14 @@ io.sockets.on('connection', function (socket) {
   socket.on('adduser', function(username){
     socket.username=username;
     users.push(username);
-    var item = {msg: username + ' is now online', nick:'Server', when:currentTime()};
+    var item = {announce: username + ' is now online', nick:'Server', when:currentTime()};
     io.sockets.emit('msg', item);
     addHistoryItem({type:'msg', payload: item});
     io.sockets.emit('updateusers', users);
   });
   socket.on('disconnect', function(){
     users.splice(users.indexOf(socket.username), 1);
-    var item = {msg: socket.username + ' has gone awol', nick:'Server', when:currentTime()};
+    var item = {announce: socket.username + ' has gone awol', nick:'Server', when:currentTime()};
     io.sockets.emit('msg', item);
     addHistoryItem({type:'msg',payload:item});
     io.sockets.emit('updateusers', users);
