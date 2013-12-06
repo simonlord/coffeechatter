@@ -102,6 +102,9 @@ io.sockets.on('connection', function (socket) {
   }
   socket.on('adduser', function(username, email){
     console.log(username + " " + email);
+    if(email == null){
+        email = username; // just to make different default icons get produced
+    }
     var user = {nick:username, gravatar: retrieveGravatar(email)};
     socket.user=user;
     users.push(user);
