@@ -78,13 +78,19 @@
                   socket.on('coffeecommand', function (data) {
                     console.log(data);
                     dust.render("coffeecommand",data,function(err,out){$('#messages').prepend(out)});
-                    if(username != data.nick){
-                        $.titleAlert('New Coffee Command');
+                    if(nick != data.user.nick){
+                        //$.titleAlert('New Coffee Command');
+                        notify(data.user, data.user.nick,data.name);
                     }
                   });
                   socket.on('msg', function (data) {
                     console.log(data);
                     dust.render("msg",data,function(err,out){$('#messages').prepend(out)});
+                    var msg = data.msg;
+                    if(data.announce){
+                        msg = data.announce;
+                    }
+                    notify(data.user, data.user.nick,msg);
                   });
                   socket.on('updateusers', function (data) {
                     console.log(data);
@@ -95,7 +101,25 @@
                   socket.on('voted',function(data){
                     console.log(data);
                     dust.render("voted",data,function(err,out){$('#vote-responses-for-vote-'+data.voteid+'-'+data.vote).append(out)});
+                    notify(data.user, data.user.nick,data.vote + " for " + data.votename);
                   });
+            }
+
+            var focused = true;
+
+            window.onfocus = function() {
+                focused = true;
+            };
+            window.onblur = function() {
+                focused = false;
+            };
+            
+            function notify(user, title, message){
+                if(focused == false){
+                    if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
+                        window.webkitNotifications.createNotification(user.gravatar, title, message).show();
+                    }
+                }
             }
 
             $(function(){
@@ -105,6 +129,15 @@
                     $('#loginRow').remove();
                     
                     connect(nick,email);
+
+                    if (window.webkitNotifications) {
+                      console.log("Notifications are supported!");
+                      if (window.webkitNotifications.checkPermission() != 0) {
+                           window.webkitNotifications.requestPermission();
+                      }
+                    } else {
+                      console.log("Notifications are not supported for this Browser/OS version yet.");
+                    }
                 });
             // when the client clicks SEND
             $('#send').click( function() {
@@ -126,9 +159,9 @@
         var coffeecommand = function(command){
             socket.emit('coffeecommand',command);
         };
-        var vote = function(voteid, vote){
-            console.log("voting for "+vote+ " on voteid "+voteid);
-            socket.emit('vote',{voteid:voteid, vote:vote});
+        var vote = function(voteid, vote, votename){
+            console.log("voting for "+vote+ " on voteid "+voteid+", "+votename);
+            socket.emit('vote',{voteid:voteid, vote:vote, votename:votename});
         };
         </script>
 </body>

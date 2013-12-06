@@ -143,7 +143,7 @@ io.sockets.on('connection', function (socket) {
   });
   socket.on('vote', function (data) {
     console.log(data);
-    var item = {voteid: data.voteid, vote:data.vote, user:socket.user, when:currentTime()};
+    var item = {votename:data.votename, voteid: data.voteid, vote:data.vote, user:socket.user, when:currentTime()};
     io.sockets.emit('voted', item);
     addHistoryItem({type:'voted',payload:item});
   });

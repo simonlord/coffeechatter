@@ -8,7 +8,7 @@
         {?voteid}
             <ul>
                 {#choices}
-                  <li><a class="btn btn-mini btn-primary" onclick="vote('{voteid}','{.}')">{.}</a>
+                  <li><a class="btn btn-mini btn-primary" onclick="vote('{voteid}','{.}','{name}')">{.}</a>
                         <div id="vote-responses-for-vote-{voteid}-{.}"></div>
                   </li>{~n}
                 {/choices}
