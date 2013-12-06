@@ -1,6 +1,8 @@
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
+var gravatar = require('gravatar');
+var _ = require('underscore');
 
 var app = http.createServer(function(rq,rs){
     console.log("rq received for " + rq.url);
@@ -88,6 +90,9 @@ function guid() {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
          s4() + '-' + s4() + s4() + s4();
 }
+function retrieveGravatar(email){
+    return gravatar.url(""+email, {s: '50', r: 'pg', d: 'retro'});
+}
 io.sockets.on('connection', function (socket) {
   // first send history
   for(i=0;i<history.length;i++){
@@ -95,24 +100,26 @@ io.sockets.on('connection', function (socket) {
     console.log("History: "+item);
     socket.emit(item.type, item.payload);
   }
-  socket.on('adduser', function(username){
-    socket.username=username;
-    users.push(username);
-    var item = {announce: 'is now online', nick: username, when:currentTime()};
+  socket.on('adduser', function(username, email){
+    console.log(username + " " + email);
+    var user = {nick:username, gravatar: retrieveGravatar(email)};
+    socket.user=user;
+    users.push(user);
+    var item = {announce: 'is now online', user: user, when:currentTime()};
     io.sockets.emit('msg', item);
     addHistoryItem({type:'msg', payload: item});
     io.sockets.emit('updateusers', users);
   });
   socket.on('disconnect', function(){
-    users.splice(users.indexOf(socket.username), 1);
-    var item = {announce: 'has gone awol', nick: socket.username, when:currentTime()};
+    users = _.reject(users, function(user){return user.nick == socket.user.nick;});
+    var item = {announce: 'has gone awol', user: socket.user, when:currentTime()};
     io.sockets.emit('msg', item);
     addHistoryItem({type:'msg',payload:item});
     io.sockets.emit('updateusers', users);
   });
   socket.on('coffeecommand', function (data) {
     console.log(data);
-    data.nick = socket.username;
+    data.user = socket.user;
     data.when = currentTime();
     if(data.type == 'vote'){
         data.voteid = guid();
@@ -126,14 +133,14 @@ io.sockets.on('connection', function (socket) {
     if(msg.substring(0,1) == '/'){
 	     handleIrcCommand(socket,data);
     }else{
-       var item = {msg:msg, nick:socket.username, when:currentTime()};
+       var item = {msg:msg, user:socket.user, when:currentTime()};
        io.sockets.emit('msg', item);
        addHistoryItem({type:'msg',payload:item});
     }
   });
   socket.on('vote', function (data) {
     console.log(data);
-    var item = {voteid: data.voteid, vote:data.vote, nick:socket.username, when:currentTime()};
+    var item = {voteid: data.voteid, vote:data.vote, user:socket.user, when:currentTime()};
     io.sockets.emit('voted', item);
     addHistoryItem({type:'voted',payload:item});
   });

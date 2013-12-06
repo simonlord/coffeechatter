@@ -1,7 +1,7 @@
 <h2>Users online</h2>
 <ul>
-{#usernames}
-        <li>{.}</li>{~n}
-{/usernames}
+{#users}
+        <li><img src="{gravatar|s}"/> {nick}</li>{~n}
+{/users}
 </ul>
 

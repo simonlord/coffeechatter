@@ -1,10 +1,16 @@
-{?announce}
-  <blockquote>
-    <small>@ {when}: {nick} {announce}</small>
-  </blockquote>
-{:else}
-  <blockquote>
-    <small>@ {when}: {nick}</small>
-    <p>{msg|s}</p>
-  </blockquote>
-{/announce}
+  <div class="media">
+    <a class="pull-left" href="#">
+      <img class="media-object" src="{user.gravatar|s}" width="30">
+    </a>
+    <div class="media-body">
+      {?announce}
+        <small class="media-heading">@ {when}: {user.nick} {announce}</small>
+      {:else}
+        <small>@ {when}: {user.nick}</small>
+        <p>{msg|s}</p>
+      {/announce}
+    </div>
+  </div>
+
+
+

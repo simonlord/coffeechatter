@@ -17,7 +17,14 @@
 </head>
 <body>
 <div class="container">
-        <div class="row">
+        <div class="row" id="loginRow">
+            <div class="span6">
+                <input id="nick" type="text" placeholder="Username..."/>
+                <input id="email" type="text" placeholder="Email (for gravatar)..."/>
+                <button id="login" class="btn btn-primary">Login</button>
+            </div>
+        </div>
+        <div class="row " id="composeRow">
             <div class="span2" >
                 
             </div>
@@ -61,35 +68,44 @@
                     ]
                 };
                 dust.render("commands",commands,function(err,out){$('#commands').append(out)});
-              var username = prompt('What is your nickname?');
-              var server = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":"+window.location.port : "");
-              var socket = io.connect(server);
-              socket.on('connect', function () {
-                socket.emit('adduser', username);
-              });
-              socket.on('coffeecommand', function (data) {
-                console.log(data);
-                dust.render("coffeecommand",data,function(err,out){$('#messages').prepend(out)});
-                if(username != data.nick){
-                    $.titleAlert('New Coffee Command');
-                }
-              });
-              socket.on('msg', function (data) {
-                console.log(data);
-                dust.render("msg",data,function(err,out){$('#messages').prepend(out)});
-              });
-              socket.on('updateusers', function (data) {
-                console.log(data);
-                var users = {usernames:data};
-                $('#users').empty();
-                dust.render("userlist",users,function(err,out){$('#users').append(out)});
-              });
-              socket.on('voted',function(data){
-                console.log(data);
-                dust.render("voted",data,function(err,out){$('#vote-responses-for-vote-'+data.voteid+'-'+data.vote).append(out)});
-              });
+             var socket = null;
+             function connect(nick,email){
+                  var server = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":"+window.location.port : "");
+                  socket = io.connect(server);
+                  socket.on('connect', function () {
+                    socket.emit('adduser', nick, email);
+                  });
+                  socket.on('coffeecommand', function (data) {
+                    console.log(data);
+                    dust.render("coffeecommand",data,function(err,out){$('#messages').prepend(out)});
+                    if(username != data.nick){
+                        $.titleAlert('New Coffee Command');
+                    }
+                  });
+                  socket.on('msg', function (data) {
+                    console.log(data);
+                    dust.render("msg",data,function(err,out){$('#messages').prepend(out)});
+                  });
+                  socket.on('updateusers', function (data) {
+                    console.log(data);
+                    var users = {users:data};
+                    $('#users').empty();
+                    dust.render("userlist",users,function(err,out){$('#users').append(out)});
+                  });
+                  socket.on('voted',function(data){
+                    console.log(data);
+                    dust.render("voted",data,function(err,out){$('#vote-responses-for-vote-'+data.voteid+'-'+data.vote).append(out)});
+                  });
+            }
 
             $(function(){
+                $('#login').click(function(){
+                    var nick = $('#nick').val();
+                    var email = $('#email').val();
+                    $('#loginRow').remove();
+                    
+                    connect(nick,email);
+                });
             // when the client clicks SEND
             $('#send').click( function() {
                 var message = $('#msgInput').val();

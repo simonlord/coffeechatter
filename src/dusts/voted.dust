@@ -1,1 +1,9 @@
-<small>{nick}@{when}</small>
+  <div class="media">
+    <a class="pull-left" href="#">
+      <img class="media-object" src="{user.gravatar|s}" width="20">
+    </a>
+    <div class="media-body">
+        <small>{user.nick} @ {when}</small>
+    </div>
+  </div>
+

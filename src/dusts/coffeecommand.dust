@@ -1,14 +1,19 @@
-<blockquote>
-    <small>{nick} @ {when}</small>
-    <p><span class="label {class}">{name}</span></p>
-    {?voteid}
-        <ul>
-            {#choices}
-              <li><a class="btn btn-mini btn-primary" onclick="vote('{voteid}','{.}')">{.}</a>
-                    <div id="vote-responses-for-vote-{voteid}-{.}"></div>
-              </li>{~n}
-            {/choices}
-        </ul>
- 
-    {/voteid}
-</blockquote>
+  <div class="media">
+    <a class="pull-left" href="#">
+      <img class="media-object" src="{user.gravatar|s}" width="30">
+    </a>
+    <div class="media-body">
+        <small>@ {when}: {user.nick}</small>
+        <p><span class="label {class}">{name}</span></p>
+        {?voteid}
+            <ul>
+                {#choices}
+                  <li><a class="btn btn-mini btn-primary" onclick="vote('{voteid}','{.}')">{.}</a>
+                        <div id="vote-responses-for-vote-{voteid}-{.}"></div>
+                  </li>{~n}
+                {/choices}
+            </ul>
+        {/voteid}
+    </div>
+  </div>
+

@@ -17,7 +17,7 @@ Dev setup
 `npm config set proxy http://HOST:PORT` and `npm config set https-proxy http://HOST:PORT`
 - Install some dependencies
 
-`npm install dustjs-linkedin dustjs-helpers socket.io dust-compiler debug`
+`npm install dustjs-linkedin dustjs-helpers socket.io dust-compiler debug gravatar underscore`
 - Compile the dust templates: 
 
 `node node_modules/dust-compiler/lib/dust-compiler.js -s src/dusts/ -d public/js/compiled/  --bootstrap`
