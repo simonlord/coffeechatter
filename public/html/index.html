@@ -17,30 +17,33 @@
 </head>
 <body>
 <div class="container">
+        <div class="row">
+            <p></p>
+        </div>
         <div class="row" id="loginRow">
             <div class="span6">
-                <input id="nick" type="text" placeholder="Username..."/>
-                <input id="email" type="text" placeholder="Email (for gravatar)..."/>
-                <button id="login" class="btn btn-primary">Login</button>
+                <input id="nick" class="nickInput" type="text" placeholder="Username..."/>
+                <input id="email" class="emailInput" type="text" placeholder="Email (for gravatar)..."/>
+            </div>
+            <div class="span1">
+                 <button id="login" class="btn btn-primary">Login</button>
             </div>
         </div>
         <div class="row " id="composeRow">
             <div class="span2" >
                 
             </div>
-            <div class="span4">
-                <div class="panel-footer">
-                    <div class="input-group">
-                        <input id="msgInput" type="text" class="form-control input-sm" placeholder="Type your message here..." autofocus/>
-                        <span class="input-group-btn">
-                            <button class="btn btn-warning btn-sm" id="send">
-                                Send</button>
-                        </span>
+            <div class="input-group">
+                <div class="span4">
+                    <div>
+                        <input id="msgInput" type="text" class="msgInput form-control input-sm" placeholder="Type your message here..." autofocus/>
                     </div>
                 </div>
-            </div>
-            <div class="span2" >
-                
+                <div class="span2" >
+                    <span class="input-group-btn">
+                        <button class="btn btn-warning btn-sm" id="send">Send</button>
+                    </span> 
+                </div>
             </div>
         </div>
         <div class="row">
