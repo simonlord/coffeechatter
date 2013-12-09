@@ -76,9 +76,9 @@ function handleIrcCommand(socket,data){
     var cmd = bits[0].substring(1,bits[0].length);
     switch(cmd){
        case "me":
-	   console.log("/me command received from " + socket.username + ": " + cmd);
+	   console.log("/me command received from " + socket.user.nick + ": " + cmd);
            var ann = msg.substring(msg.indexOf(' '),msg.length);
-           var item = {announce:ann, nick:socket.username, when:currentTime()};
+           var item = {announce:ann, user:socket.user, when:currentTime()};
            io.sockets.emit('msg', item);
            addHistoryItem({type:'msg',payload:item});    
            break;
