@@ -80,7 +80,7 @@
                     dust.render("coffeecommand",data,function(err,out){$('#messages').prepend(out)});
                     if(nick != data.user.nick){
                         //$.titleAlert('New Coffee Command');
-                        notify(data.user, data.user.nick,data.name);
+                        notify(data.user, data.user.nick,data.name, data.history);
                     }
                   });
                   socket.on('msg', function (data) {
@@ -90,7 +90,9 @@
                     if(data.announce){
                         msg = data.announce;
                     }
-                    notify(data.user, data.user.nick,msg);
+                    if(nick != data.user.nick){
+                        notify(data.user, data.user.nick, msg, data.history);
+                    }
                   });
                   socket.on('updateusers', function (data) {
                     console.log(data);
@@ -101,7 +103,7 @@
                   socket.on('voted',function(data){
                     console.log(data);
                     dust.render("voted",data,function(err,out){$('#vote-responses-for-vote-'+data.voteid+'-'+data.vote).append(out)});
-                    notify(data.user, data.user.nick,data.vote + " for " + data.votename);
+                    notify(data.user, data.user.nick,data.vote + " for " + data.votename, data.history);
                   });
             }
 
@@ -114,10 +116,15 @@
                 focused = false;
             };
             
-            function notify(user, title, message){
-                if(focused == false){
+            function notify(user, title, message, historical){
+                historical = (typeof historical !== 'undefined') ? historical : false;
+                if(focused == false && historical == false){
                     if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
-                        window.webkitNotifications.createNotification(user.gravatar, title, message).show();
+                        var notification = window.webkitNotifications.createNotification(user.gravatar, title, message);
+                        notification.show();
+                        setTimeout(function(){
+                            notification.cancel()
+                        }, 1000*30);
                     }
                 }
             }

@@ -43,6 +43,7 @@ setInterval(function(){
         });
     }, 20000);
 function addHistoryItem(item){
+    item.payload.history=true;
     history.push(item);
     if(history.length > 20){
         history = history.slice(history.length-20,history.length);
