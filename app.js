@@ -115,7 +115,12 @@ io.sockets.on('connection', function (socket) {
     io.sockets.emit('updateusers', users);
   });
   socket.on('disconnect', function(){
-    users = _.reject(users, function(user){return user.nick == socket.user.nick;});
+    console.log("Disconnected: ");
+    console.log(socket.user);
+    nickToRemove = typeof socket.user !== 'undefined' ? socket.user.nick : "";
+    users = _.reject(users, function(user){
+        return user.nick == nickToRemove;
+    });
     var item = {announce: 'has gone awol', user: socket.user, when:currentTime()};
     io.sockets.emit('msg', item);
     addHistoryItem({type:'msg',payload:item});
