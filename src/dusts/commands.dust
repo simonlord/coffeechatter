@@ -1,7 +1,6 @@
-<h2>Coffee commands<h2>
-<ul>
+<ul style="list-style: none;">
 {#commands}
-   <li><a class="btn" onclick="coffeecommand({commands[$idx]|js})">{name}</a></li>{~n}
+   <li style="margin: 10px 0;"><a class="btn" onclick="coffeecommand({commands[$idx]|js})">{name}</a></li>{~n}
 {/commands}
 </ul>
 
