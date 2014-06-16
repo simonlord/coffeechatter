@@ -67,7 +67,8 @@
                         { id: 3, name: "Coffee Ready", type: "stmt", class:"label-important"},
                         { id: 4, name: "We are out of coffee", type: "stmt", class:"label-important"},
                         { id: 5, name: "Lunch?", type: "vote", class:"label-success", choices:['Yes','No']},
-                        { id: 6, name: "Foos?", type: "vote", class:"label-success", choices:['Yes','No']}
+                        { id: 6, name: "Foos?", type: "vote", class:"label-success", choices:['Yes','No']},
+                        { id: 7, name: "Baristas?", type: "vote", class:"label-success", choices:['Yes','No']}
                     ]
                 };
                 dust.render("commands",commands,function(err,out){$('#commands').append(out)});
