@@ -128,12 +128,15 @@
             function notify(user, title, message, historical){
                 historical = (typeof historical !== 'undefined') ? historical : false;
                 if(focused == false && historical == false){
-                    if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
-                        var notification = window.webkitNotifications.createNotification(user.gravatar, title, message);
+                    if (window.Notification.permission === 'granted') { 
+                        var notification = new Notification(title,{icon:user.gravatar,body:message});
+                        notification.onshow = function(){
+                            setTimeout(function(){
+                                notification.close()
+                            }, 1000*30);
+                        };
+
                         notification.show();
-                        setTimeout(function(){
-                            notification.cancel()
-                        }, 1000*30);
                     }
                 }
             }
@@ -146,10 +149,15 @@
                     
                     connect(nick,email);
 
-                    if (window.webkitNotifications) {
+                    if (window.Notification) {
                       console.log("Notifications are supported!");
-                      if (window.webkitNotifications.checkPermission() != 0) {
-                           window.webkitNotifications.requestPermission();
+                      if (Notification.permission !== "denied") {
+                        Notification.requestPermission(function (permission) {
+                            // Whatever the user answers, we make sure we store the information
+                            if(!('permission' in Notification)) {
+                                Notification.permission = permission;
+                            }
+                        });
                       }
                     } else {
                       console.log("Notifications are not supported for this Browser/OS version yet.");
