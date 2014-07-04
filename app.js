@@ -109,21 +109,10 @@ io.sockets.on('connection', function (socket) {
     var user = {nick:username, gravatar: retrieveGravatar(email)};
     socket.user=user;
     users.push(user);
-    var item = {announce: 'is now online', user: user, when:currentTime()};
-    io.sockets.emit('msg', item);
-    addHistoryItem({type:'msg', payload: item});
     io.sockets.emit('updateusers', users);
   });
   socket.on('disconnect', function(){
-    console.log("Disconnected: ");
-    console.log(socket.user);
-    nickToRemove = typeof socket.user !== 'undefined' ? socket.user.nick : "";
-    users = _.reject(users, function(user){
-        return user.nick == nickToRemove;
-    });
-    var item = {announce: 'has gone awol', user: socket.user, when:currentTime()};
-    io.sockets.emit('msg', item);
-    addHistoryItem({type:'msg',payload:item});
+    users = _.reject(users, function(user){return user.nick == socket.user.nick;});
     io.sockets.emit('updateusers', users);
   });
   socket.on('coffeecommand', function (data) {
