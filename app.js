@@ -112,7 +112,8 @@ io.sockets.on('connection', function (socket) {
     io.sockets.emit('updateusers', users);
   });
   socket.on('disconnect', function(){
-    users = _.reject(users, function(user){return user.nick == socket.user.nick;});
+    nickToRemove = typeof socket.user !== 'undefined' ? socket.user.nick : "";
+    users = _.reject(users, function(user){return user.nick == nickToRemove;});
     io.sockets.emit('updateusers', users);
   });
   socket.on('coffeecommand', function (data) {
