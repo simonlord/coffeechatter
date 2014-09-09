@@ -128,13 +128,15 @@ io.sockets.on('connection', function (socket) {
   });
   socket.on('msg', function (data) {
     console.log(data);
-    var msg = replaceUrlWithHtmlLinks(data.msg);
-    if(msg.substring(0,1) == '/'){
-	     handleIrcCommand(socket,data);
-    }else{
-       var item = {msg:msg, user:socket.user, when:currentTime()};
-       io.sockets.emit('msg', item);
-       addHistoryItem({type:'msg',payload:item});
+    if(data && data.msg) {
+        var msg = replaceUrlWithHtmlLinks(data.msg);
+        if(msg.substring(0,1) == '/'){
+             handleIrcCommand(socket,data);
+        } else{
+           var item = {msg:msg, user:socket.user, when:currentTime()};
+           io.sockets.emit('msg', item);
+           addHistoryItem({type:'msg',payload:item});
+        }
     }
   });
   socket.on('vote', function (data) {
