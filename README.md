@@ -15,9 +15,9 @@ Dev setup
 - Setup proxy for npm (optional): 
 
 `npm config set proxy http://HOST:PORT` and `npm config set https-proxy http://HOST:PORT`
-- Install some dependencies
+- Install dependencies listed in package.json
 
-`npm install dustjs-linkedin dustjs-helpers socket.io dust-compiler debug gravatar underscore`
+`npm install -d`
 - Compile the dust templates: 
 
 `node node_modules/dust-compiler/lib/dust-compiler.js -s src/dusts/ -d public/js/compiled/  --bootstrap`
@@ -34,3 +34,5 @@ Running
 `node app.js`
 
 open your web browser at http://HOST:7777/
+
+To change the port just set the PORT environment variable
