@@ -147,6 +147,6 @@ io.sockets.on('connection', function (socket) {
   });
 });
 
-app.listen(7777);
-console.log("Server started");
-
+var port = process.env.PORT || 7777;
+app.listen(port);
+console.log("Server started on port " + port);
