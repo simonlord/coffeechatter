@@ -16,7 +16,9 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dustc": "node node_modules/dust-compiler/lib/dust-compiler.js -s src/dusts/ -d public/js/compiled/ --bootstrap",
+    "dustw": "node node_modules/dust-compiler/lib/dust-compiler.js -s src/dusts/ -d public/js/compiled/"
   },
   "repository": {
     "type": "git",

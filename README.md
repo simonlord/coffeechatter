@@ -20,10 +20,10 @@ Dev setup
 `npm install -d`
 - Compile the dust templates: 
 
-`node node_modules/dust-compiler/lib/dust-compiler.js -s src/dusts/ -d public/js/compiled/  --bootstrap`
+`npm run dustc`
 - If you are developing the dust templates then you can leave the compiler in watch mode
 
-`node node_modules/dust-compiler/lib/dust-compiler.js -s src/dusts/ -d public/js/compiled/`
+`npm run dustw`
 
 NOTE: on Ubuntu you need to type "nodjs" instead of "node"
 
