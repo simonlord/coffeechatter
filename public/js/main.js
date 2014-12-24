@@ -12,7 +12,7 @@ commands:[
          { id: 7, name: "Baristas?", type: "vote", class:"label-success", choices:['Yes','No']}
          ]
 };
-dust.render("commands",commands,function(err,out){$('#commands').append(out)});
+dust.render("commands",commands,function(err,out){$('#commands').append(out);});
 var socket = null;
 function connect(nick,email){
     var server = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":"+window.location.port : "");
@@ -22,7 +22,7 @@ function connect(nick,email){
             });
     socket.on('coffeecommand', function (data) {
             console.log(data);
-            dust.render("coffeecommand",data,function(err,out){$('#messages').prepend(out)});
+            dust.render("coffeecommand",data,function(err,out){$('#messages').prepend(out);});
             if(nick != data.user.nick){
             //$.titleAlert('New Coffee Command');
             notify(data.user, data.user.nick,data.name, data.history);
@@ -30,7 +30,7 @@ function connect(nick,email){
             });
     socket.on('msg', function (data) {
             console.log(data);
-            dust.render("msg",data,function(err,out){$('#messages').prepend($.emoticons.replace(out))});
+            dust.render("msg",data,function(err,out){$('#messages').prepend($.emoticons.replace(out));});
             var msg = data.msg;
             if(data.announce){
             msg = data.announce;
@@ -43,11 +43,11 @@ function connect(nick,email){
             console.log(data);
             var users = {users:data};
             $('#users').empty();
-            dust.render("userlist",users,function(err,out){$('#users').append(out)});
+            dust.render("userlist",users,function(err,out){$('#users').append(out);});
             });
     socket.on('voted',function(data){
             console.log(data);
-            dust.render("voted",data,function(err,out){$('#vote-responses-for-vote-'+data.voteid+'-'+data.vote).append(out)});
+            dust.render("voted",data,function(err,out){$('#vote-responses-for-vote-'+data.voteid+'-'+data.vote).append(out);});
             notify(data.user, data.user.nick,data.vote + " for " + data.votename, data.history);
             });
 }
@@ -63,12 +63,12 @@ window.onblur = function() {
 
 function notify(user, title, message, historical){
     historical = (typeof historical !== 'undefined') ? historical : false;
-    if(focused == false && historical == false){
+    if(focused === false && historical === false){
         if (window.Notification.permission === 'granted') { 
             var notification = new Notification(title,{icon:user.gravatar,body:message});
             notification.onshow = function(){
                 setTimeout(function(){
-                        notification.close()
+                        notification.close();
                         }, 1000*30);
             };
 
