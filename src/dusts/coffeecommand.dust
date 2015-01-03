@@ -1,15 +1,18 @@
   <div class="media">
-    <a class="pull-left" href="#">
-      <img class="media-object" src="{user.gravatar|s}" width="30">
+    <a class="media-left" href="#">
+      <img src="{user.gravatar|s}" width="30">
     </a>
     <div class="media-body">
-        <small>@ {when}: {user.nick}</small>
-        <p><span class="label {class}">{name}</span></p>
+        <small class="media-heading">@ {when}: {user.nick}</small>
+        <h4><span class="label {class}">{name}</span></h4>
         {?voteid}
             <ul>
                 {#choices}
-                  <li><a class="btn btn-mini btn-primary" onclick="vote('{voteid}','{.}','{name}')">{.}</a>
-                        <div id="vote-responses-for-vote-{voteid}-{.}"></div>
+                  <li>
+                    <a class="btn btn-xs btn-primary" role="button" onclick="vote('{voteid}','{.}','{name}')">{.}</a>
+                    <p>
+                    <ul class="media-list" id="vote-responses-for-vote-{voteid}-{.}"></ul>
+                    </p>
                   </li>{~n}
                 {/choices}
             </ul>
