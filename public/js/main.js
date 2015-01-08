@@ -21,11 +21,20 @@ setTimeout(function() {
 
 var socket = null;
 function connect(nick,email){
+    console.log("connecting");
     var server = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":"+window.location.port : "");
     socket = io.connect(server);
     socket.on('connect', function () {
             socket.emit('adduser', nick, email);
+            $('#loginRow').hide();
+            $('#postLoginContent').fadeIn();
+	    console.log("connected");
             });
+    socket.on('disconnect', function() {
+            $('#disconnectedContent').fadeIn();
+            $('#postLoginContent').fadeTo(5,0.25);
+    	    notify('CoffeeChatter','Disconnected','WebSocket disconnected from server - please login again', false);
+	    });
     socket.on('coffeecommand', function (data) {
             console.log(data);
             dust.render("coffeecommand",data,function(err,out){$('#messages').prepend(out);});
@@ -87,8 +96,6 @@ $(function(){
         $('#login').click(function(){
             var nick = $('#nick').val();
             var email = $('#email').val();
-            $('#loginRow').remove();
-            $('#postLoginContent').fadeIn();
 
             connect(nick,email);
 
