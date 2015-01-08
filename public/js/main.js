@@ -5,8 +5,8 @@ commands:[
          { id: 0, name: "I could really go a coffee", type: "stmt", class:"label-info"},
          { id: 1, name: "Who wants coffee?", type: "vote", class:"label-success", choices:['Yes','No']},
          { id: 2, name: "Coffee Brewing", type: "stmt", class:"label-warning"},
-         { id: 3, name: "Coffee Ready", type: "stmt", class:"label-important"},
-         { id: 4, name: "We are out of coffee", type: "stmt", class:"label-important"},
+         { id: 3, name: "Coffee Ready", type: "stmt", class:"label-danger"},
+         { id: 4, name: "We are out of coffee", type: "stmt", class:"label-danger"},
          { id: 5, name: "Lunch?", type: "vote", class:"label-success", choices:['Yes','No']},
          { id: 6, name: "Foos?", type: "vote", class:"label-success", choices:['Yes','No']},
          { id: 7, name: "Baristas?", type: "vote", class:"label-success", choices:['Yes','No']}
