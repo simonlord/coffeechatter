@@ -1,12 +1,12 @@
 <html>
 <head>
         <title>CoffeeChatter - v0.1</title>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
         <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.titlealert.min.js"></script>
         <script type="text/javascript" src="js/dust-core-2.2.0.js"></script>
         <script type="text/javascript" src="js/socket.io.js"></script>
-        <script type="text/javascript" src="js/bootstrap/js/bootstrap.js"></script>
+        <script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/compiled/coffeecommand.js"></script>
         <script type="text/javascript" src="js/compiled/msg.js"></script>
         <script type="text/javascript" src="js/compiled/commands.js"></script>
@@ -26,54 +26,47 @@
             <p></p>
         </div>
         <div class="row" id="loginRow">
-            <div class="span6">
-                <input id="nick" class="nickInput" type="text" placeholder="Username..."/>
-                <input id="email" class="emailInput" type="text" placeholder="Email (for gravatar)..."/>
-            </div>
-            <div class="span1">
-                 <button id="login" class="btn btn-primary">Login</button>
+            <div class="col-md-6">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <input id="nick" class="nickInput" type="text" placeholder="Username..."/>
+                        <input id="email" class="emailInput" type="text" placeholder="Email (for gravatar)..."/>
+                    </div>
+                     <button id="login" class="btn btn-primary">Login</button>
+                </form>
+
             </div>
         </div>
         <div class="row " id="motdRow">
-            <div class="span2" >
-                
+            <div class="col-md-2" >
             </div>
-            <div class="input-group">
                 <div class="span4 motd">
-                    <div>
-                        <span>MOTD:</span>
-                        <a href="https://docs.google.com/spreadsheets/d/1271rPFamOA-oB2iNvWM7qqd7fEOHPPBwnSdDtJOj7nA/edit" target="_blank">
-                            The Oracle 100 Press Up Challenge!
-                        </a>
-                    </div>
+			<span>MOTD:</span>
+			<a href="https://docs.google.com/spreadsheets/d/1271rPFamOA-oB2iNvWM7qqd7fEOHPPBwnSdDtJOj7nA/edit" target="_blank">
+			    The Oracle 100 Press Up Challenge!
+			</a>
                 </div>
-            </div>
         </div>
-        <div class="row " id="composeRow">
-            <div class="span2" >
-                
+        <div class="row" id="composeRow">
+            <div class="col-md-2" >
             </div>
-            <div class="input-group">
-                <div class="span4">
-                    <div>
-                        <input id="msgInput" type="text" class="msgInput form-control input-sm" placeholder="Type your message here..." autofocus/>
+            <div class="col-md-6">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <input id="msgInput" style="width:400px" type="text" class="form-control input-sm" placeholder="Type your message here..." autofocus/>
                     </div>
-                </div>
-                <div class="span2" >
-                    <span class="input-group-btn">
-                        <button class="btn btn-warning btn-sm" id="send">Send</button>
-                    </span> 
-                </div>
+                    <button type="button" class="btn btn-sm btn-warning" id="send">Send</button>
+                </form>
             </div>
         </div>
         <div class="row">
-            <div class="span2" id="users">
+            <div class="col-md-2" id="users">
                 
             </div>
-               <div class="span4" id="messages"> 
+               <div class="col-md-8" id="messages"> 
                 
                </div>
-            <div class="span2" id="commands">
+            <div class="col-md-2" id="commands">
                 
             </div>
         </div>

@@ -1,9 +1,9 @@
-  <div class="media">
-    <a class="pull-left" href="#">
-      <img class="media-object" src="{user.gravatar|s}" width="20">
+  <li class="media">
+    <a class="media-left" href="#">
+      <img src="{user.gravatar|s}" width="20">
     </a>
     <div class="media-body">
-        <small>{user.nick} @ {when}</small>
+        <small class="media-heading">{user.nick} @ {when}</small>
     </div>
-  </div>
+  </li>
 

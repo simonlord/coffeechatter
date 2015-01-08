@@ -12,7 +12,13 @@ commands:[
          { id: 7, name: "Baristas?", type: "vote", class:"label-success", choices:['Yes','No']}
          ]
 };
-dust.render("commands",commands,function(err,out){$('#commands').append(out);});
+
+setTimeout(function() {
+    dust.render("commands", commands, function(err,out) {
+        $('#commands').append(out);
+    });
+}, 10);
+
 var socket = null;
 function connect(nick,email){
     var server = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":"+window.location.port : "");
@@ -98,23 +104,26 @@ $(function(){
             } else {
             console.log("Notifications are not supported for this Browser/OS version yet.");
             }
-            });
+            return false;
+        });
         // when the client clicks SEND
         $('#send').click( function() {
-                var message = $('#msgInput').val();
-                $('#msgInput').val('');
-                $('#msgInput').focus();
-                // tell server to execute 'sendchat' and send along one parameter
-                socket.emit('msg', {msg:message});
-                });
+            var message = $('#msgInput').val();
+            $('#msgInput').val('');
+            $('#msgInput').focus();
+            // tell server to execute 'sendchat' and send along one parameter
+            socket.emit('msg', {msg:message});
+            return false;
+        });
 
         // when the client hits ENTER on their keyboard
         $('#msgInput').keypress(function(e) {
-                if(e.which == 13) {
+            if(e.which == 13) {
                 $(this).blur();
                 $('#send').focus().click();
-                }
-                });
+                return false;
+            }
+        });
 });
 var coffeecommand = function(command){
     socket.emit('coffeecommand',command);

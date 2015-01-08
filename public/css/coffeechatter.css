@@ -1,15 +1,6 @@
 input[type="text"]{
     height: 25px;
 }
-.nickInput{
-    width: 40%;
-}
-.emailInput{
-    width: 59%;
-}
-.msgInput{
-    width: 100%;
-}
 .motd { 
     font-weight: bold;
     padding: 10px 0 15px 0;
