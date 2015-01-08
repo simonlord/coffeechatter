@@ -1,13 +1,15 @@
   <div class="media">
-    <a class="pull-left" href="#">
-      <img class="media-object" src="{user.gravatar|s}" width="30">
+    <a class="media-left" href="#">
+      <img src="{user.gravatar|s}" width="30">
     </a>
     <div class="media-body">
       {?announce}
         <small class="media-heading">@ {when}: {user.nick} {announce}</small>
       {:else}
-        <small>@ {when}: {user.nick}</small>
-        <p>{msg|s}</p>
+        <small class="media-heading">@ {when}: {user.nick}</small>
+        <p>
+            {msg|s}
+        </p>
       {/announce}
     </div>
   </div>
