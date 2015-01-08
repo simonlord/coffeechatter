@@ -88,6 +88,7 @@ $(function(){
             var nick = $('#nick').val();
             var email = $('#email').val();
             $('#loginRow').remove();
+            $('#postLoginContent').fadeIn();
 
             connect(nick,email);
 
