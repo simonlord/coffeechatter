@@ -9,11 +9,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require('http');
-
-//var routes = require('./routes/index');
+var pubsub = require('pubsub');
 
 var app = express();
-var server = http.Server(app);
 
 app.use(favicon(__dirname + '/public/img/favicon.ico'));
 app.use(logger('dev'));
@@ -23,7 +21,28 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/html'))); // for index.html
 
-//app.use('/', routes);
+var mq = pubsub();
+mq.subscribe(function(msgType, item){
+  io.sockets.emit(msgType, item);
+});
+
+mq.subscribe(function(msgType, item){
+  var historyItem = {type:msgType, payload:item};
+  item.payload.history=true;
+  history.push(item);
+  if(history.length > 50){
+    history = history.slice(history.length-50,history.length);
+  }
+  fs.writeFile('.history',JSON.stringify(history), function(err){
+      if(err)throw err;
+  });
+});
+
+app.get('/msg/:msg', function(rq,rs){
+  console.log('Incoming msg from REST endpoint: '+rq.params.msg);
+  mq.publish('msg',{msg:rq.params.msg, user:'system', when:currentTime()});
+  rs.send('Thanks');
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -33,32 +52,15 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
-
-// production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+    res.send(err.message);
 });
 
 
 
-
+var server = http.Server(app);
 var io = require('socket.io').listen(server);
 var users = [];
 var history = [];
@@ -73,23 +75,6 @@ fs.readFile('.history',
         }
     }
 );
-
-setInterval(function(){
-    fs.writeFile('.history',JSON.stringify(history),
-        function(err){
-            if(err)throw err;
-            console.log("Saved history");
-        });
-    }, 20000
-);
-
-function addHistoryItem(item){
-    item.payload.history=true;
-    history.push(item);
-    if(history.length > 20){
-        history = history.slice(history.length-20,history.length);
-    }
-}
 
 function currentTime(){
     var d = new Date();
@@ -125,8 +110,7 @@ function handleIrcCommand(socket,data){
 	   console.log("/me command received from " + socket.user.nick + ": " + cmd);
            var ann = msg.substring(msg.indexOf(' '),msg.length);
            var item = {announce:ann, user:socket.user, when:currentTime()};
-           io.sockets.emit('msg', item);
-           addHistoryItem({type:'msg',payload:item});    
+           mq.publish(item);
            break;
       case "coffee":
       case "foos":
@@ -150,7 +134,7 @@ io.sockets.on('connection', function (socket) {
   }
 
   socket.on('adduser', function(username, email){
-    if(username === null){
+    if(username === undefined || username === ""){
     	username = "lazyuser-" + s4();
     }
     if(email === null){
@@ -174,8 +158,7 @@ io.sockets.on('connection', function (socket) {
     if(data.type == 'vote'){
         data.voteid = guid();
     }
-    io.sockets.emit('coffeecommand', data);
-    addHistoryItem({type:'coffeecommand',payload:data});
+    mq.publish('coffeecommand', data);
   });
 
   socket.on('msg', function (data) {
@@ -185,16 +168,14 @@ io.sockets.on('connection', function (socket) {
              handleIrcCommand(socket,data);
         } else{
            var item = {msg:msg, user:socket.user, when:currentTime()};
-           io.sockets.emit('msg', item);
-           addHistoryItem({type:'msg',payload:item});
+	   mq.publish('msg',item);
         }
     }
   });
 
   socket.on('vote', function (data) {
     var item = {votename:data.votename, voteid: data.voteid, vote:data.vote, user:socket.user, when:currentTime()};
-    io.sockets.emit('voted', item);
-    addHistoryItem({type:'voted',payload:item});
+    mq.publish('voted', item);
   });
 });
 
