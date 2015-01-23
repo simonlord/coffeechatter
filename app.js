@@ -67,7 +67,7 @@ mq.subscribe(function (msgType, item) {
                 }
             });
         } else {
-            console.log("Failed to retrieve title and favicon for " + rawLink + " - " + err + " - " + rs.statusCode);
+            console.log("Failed to retrieve title and favicon for " + rawLink + " - " + err + " - " + rsp.statusCode);
         }
         var newlink = {link: rawLink, title: pageTitle, favicon: favIcon, user: item.user, when: currentTime()};
         links.unshift(newlink);

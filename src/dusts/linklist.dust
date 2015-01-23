@@ -3,7 +3,11 @@
     <a class="media-left" href="#">
       <img src="{user.gravatar|s}" width="30">
     </a>
-    <a class="media-left" href="{link|s}">{title}</a>
+    <a class="media-left" href="#">
+      <img src="{favicon|s}" width="30">
+    </a>
+    <small><a href="{link|s}">{title}</a></small>
+    <hr/>
   </div>{~n}
 {/links}
 </ul>
