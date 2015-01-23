@@ -6,6 +6,7 @@ lib-cov
 *.out
 *.pid
 *.gz
+*.swp
 
 pids
 logs
@@ -16,3 +17,4 @@ node_modules
 
 public/js/compiled/
 .history
+.linklist

@@ -1,6 +1,6 @@
 <ul style="list-style: none;">
 {#users}
-        <li style="margin: 10px 0;"><img src="{gravatar|s}"/> {nick}</li>{~n}
+        <li class="media-left" style="margin: 10px 0;"><img src="{gravatar|s}" alt="{nick}"/></li>{~n}
 {/users}
 </ul>
 

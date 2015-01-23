@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require('http');
 var pubsub = require('pubsub');
+var request = require('request');
 
 var app = express();
 
@@ -21,6 +22,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/html'))); // for index.html
 
+var linkRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+
 var mq = pubsub();
 mq.subscribe(function(msgType, item){
   io.sockets.emit(msgType, item);
@@ -28,12 +31,28 @@ mq.subscribe(function(msgType, item){
 
 mq.subscribe(function(msgType, item){
   var historyItem = {type:msgType, payload:item};
-  item.payload.history=true;
-  history.push(item);
+  historyItem.payload.history=true;
+  history.push(historyItem);
   if(history.length > 50){
     history = history.slice(history.length-50,history.length);
   }
   fs.writeFile('.history',JSON.stringify(history), function(err){
+      if(err)throw err;
+  });
+});
+
+mq.subscribe(function(msgType, item){
+  if(msgType !== 'msg'){
+    return;
+  }
+  if(hasLink(item.msg) === false){
+    return;
+  }
+  var rawLink = extractRawLink(item.msg);
+  var newlink = {link:rawLink, title:rawLink, user:item.user, when: currentTime()};
+  links.unshift(newlink);
+  io.sockets.emit("updatelinks",links);
+  fs.writeFile('.linklist',JSON.stringify(links), function(err){
       if(err)throw err;
   });
 });
@@ -64,7 +83,18 @@ var server = http.Server(app);
 var io = require('socket.io').listen(server);
 var users = [];
 var history = [];
+var links = [];
 
+fs.readFile('.linklist',
+    function(err,data){
+        if(err){
+            console.log("Failed to load .history file:" + err);
+        } else {
+            links = JSON.parse(data);
+            console.log("Loaded link list, size: " + links.length);
+        }
+    }
+);
 fs.readFile('.history',
     function(err,data){
         if(err){
@@ -85,8 +115,15 @@ function currentTime(){
 }
 
 function replaceUrlWithHtmlLinks(text) {
-    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-    return text.replace(exp,"<a href='$1' target='_blank'>$1</a>"); 
+    return text.replace(linkRegex,"<a href='$1' target='_blank'>$1</a>"); 
+}
+
+function hasLink(text){
+    return text.match(linkRegex) !== null;
+}
+
+function extractRawLink(text){
+    return text.match(linkRegex)[0];
 }
 
 function s4() {
@@ -132,6 +169,8 @@ io.sockets.on('connection', function (socket) {
     var item = history[i];
     socket.emit(item.type, item.payload);
   }
+
+  socket.emit("updatelinks",links);
 
   socket.on('adduser', function(username, email){
     if(username === undefined || username === ""){

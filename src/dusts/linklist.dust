@@ -1,0 +1,9 @@
+{#links}
+  <div style="margin: 10px 0;">
+    <a class="media-left" href="#">
+      <img src="{user.gravatar|s}" width="30">
+    </a>
+    <a class="media-left" href="{link|s}">{title}</a>
+  </div>{~n}
+{/links}
+</ul>

@@ -65,6 +65,12 @@ function connect(nick,email){
             dust.render("voted",data,function(err,out){$('#vote-responses-for-vote-'+data.voteid+'-'+data.vote).append(out);});
             notify(data.user, data.user.nick,data.vote + " for " + data.votename, data.history);
             });
+    socket.on('updatelinks', function (data) {
+            console.log(data);
+            var links = {links:data};
+            $('#links').empty();
+            dust.render("linklist",links,function(err,out){$('#links').append(out);});
+            });
 }
 
 var focused = true;
