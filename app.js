@@ -11,6 +11,7 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var pubsub = require('pubsub');
 var request = require('request');
+var cheerio = require('cheerio');
 
 var app = express();
 
@@ -49,11 +50,28 @@ mq.subscribe(function(msgType, item){
     return;
   }
   var rawLink = extractRawLink(item.msg);
-  var newlink = {link:rawLink, title:rawLink, user:item.user, when: currentTime()};
-  links.unshift(newlink);
-  io.sockets.emit("updatelinks",links);
-  fs.writeFile('.linklist',JSON.stringify(links), function(err){
-      if(err)throw err;
+  request({proxy: 'http://www-proxy.us.oracle.com:80', uri: rawLink}, function(err,rsp,body){
+	  var pageTitle = rawLink;
+	  var favIcon = null;
+	  if (!err && rsp.statusCode == 200) {
+	            var $ = cheerio.load(body);
+		    pageTitle = $('head title').text();
+		    $('head link').each(function(i,elem){
+			console.log($(this).html());
+		    	if($(this).attr('rel').contains('icon')){
+				favIcon = $(this).attr('href');
+				return false;
+			}
+		    });
+	  } else {
+	  	console.log("Failed to retrieve title and favicon for " + rawLink + " - "+ err + " - "+ rs.statusCode);
+	  }
+	  var newlink = {link:rawLink, title:pageTitle, favicon:favIcon, user:item.user, when: currentTime()};
+	  links.unshift(newlink);
+	  io.sockets.emit("updatelinks",links);
+	  fs.writeFile('.linklist',JSON.stringify(links), function(err){
+	      if(err)throw err;
+	  });
   });
 });
 
