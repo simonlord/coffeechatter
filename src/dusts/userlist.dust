@@ -3,4 +3,3 @@
         <li style="margin: 10px 0;"><img src="{gravatar|s}"/> {nick}</li>{~n}
 {/users}
 </ul>
-

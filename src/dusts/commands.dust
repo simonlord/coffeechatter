@@ -1,6 +1,3 @@
-<ul style="list-style: none;">
 {#commands}
-   <li style="margin: 10px 0;"><a class="btn btn-default" onclick="coffeecommand({commands[$idx]|js})">{name}</a></li>{~n}
+   <div style="margin: 10px 0;"><a class="btn btn-default" onclick="coffeecommand({commands[$idx]|js})">{name}</a></div>{~n}
 {/commands}
-</ul>
-
