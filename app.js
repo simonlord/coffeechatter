@@ -54,6 +54,9 @@ mq.subscribe(function (msgType, item) {
         var pageTitle = rawLink;
         var favIcon = null;
         if (!err && rsp.statusCode == 200) {
+            if(rsp.headers['content-type'].match(/text\/html/) === null){
+                return;
+	    }
             var $ = cheerio.load(body);
             pageTitle = $('head title').text();
             $('head link').each(function (i, elem) {
@@ -64,10 +67,14 @@ mq.subscribe(function (msgType, item) {
                         // if we get an exact match break free
                         return false;
                     }
+		    if(rel === 'shortcut icon'){
+		        return false;
+		    }
                 }
             });
         } else {
             console.log("Failed to retrieve title and favicon for " + rawLink + " - " + err + " - " + rsp.statusCode);
+	    return;
         }
         var newlink = {link: rawLink, title: pageTitle, favicon: favIcon, user: item.user, when: currentTime()};
         links.unshift(newlink);
