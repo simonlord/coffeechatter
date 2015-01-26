@@ -197,7 +197,7 @@ io.sockets.on('connection', function (socket) {
         socket.emit(item.type, item.payload);
     }
 
-    socket.emit("updatelinks", links);
+    socket.emit("updatelinks", links.slice(0,10));
 
     socket.on('adduser', function (username, email) {
         if (username === undefined || username === "") {
