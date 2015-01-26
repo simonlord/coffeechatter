@@ -6,7 +6,7 @@
     <a class="media-left" href="#">
       <img src="{favicon|s}" width="30">
     </a>
-    <small><a href="{link|s}">{title}</a></small>
+    <small><a href="{link|s}" target="_blank">{title}</a></small>
     <hr/>
   </div>{~n}
 {/links}
