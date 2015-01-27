@@ -12,6 +12,7 @@ var http = require('http');
 var pubsub = require('pubsub');
 var request = require('request');
 var cheerio = require('cheerio');
+var async = require('async');
 
 var app = express();
 
@@ -24,6 +25,45 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/html'))); // for index.html
 
 var linkRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+
+var msgFilters = [];
+msgFilters.push(function(msgType, item, cb){
+    console.log("replaceLinks filter...");
+    if(item.msg){
+        var msg = replaceUrlWithHtmlLinks(item.msg);
+        item.msg = msg;
+    }
+    cb(null, msgType, item);
+});
+
+msgFilters.push(function(msgType, item, cb){
+    console.log("irc command filter...");
+    var msg = item.msg;
+    if (msg && msg.substring(0, 1) == '/') {
+	    var bits = msg.split(" ");
+	    var cmd = bits[0].substring(1, bits[0].length);
+	    switch (cmd) {
+		case "me":
+		    console.log("/me command received from " + socket.user.nick + ": " + cmd);
+		    var ann = msg.substring(msg.indexOf(' '), msg.length);
+		    var annItem = {announce: ann, user: item.user, when: item.when};
+		    cb(null, msgType, annItem);
+		    break;
+		case "coffee":
+		case "foos":
+	    }
+    } else {
+        cb(null, msgType, item);
+    } 
+});
+
+function addMsg(msg, user){
+        var item = {msg: msg, user: user, when: currentTime()};
+	var initialCB = function(cb){cb(null,'msg',item);};
+        async.waterfall(_.flatten([initialCB,msgFilters]), function(err, msgType, item){
+                mq.publish(msgType, item);
+        });    
+}
 
 var mq = pubsub();
 mq.subscribe(function (msgType, item) {
@@ -87,7 +127,7 @@ mq.subscribe(function (msgType, item) {
 
 app.get('/msg/:msg', function (rq, rs) {
     console.log('Incoming msg from REST endpoint: ' + rq.params.msg);
-    mq.publish('msg', {msg: rq.params.msg, user: 'system', when: currentTime()});
+    addMsg(rq.params.msg, 'system');
     rs.send('Thanks');
 });
 
@@ -159,28 +199,6 @@ function s4() {
       .substring(1);
 }
 
-// deal with irc like commands beginning with a /
-function handleIrcCommand(socket, data) {
-    var msg = data.msg;
-    if (msg.substring(0, 1) != '/') {
-        //no op
-        return;
-    }
-
-    var bits = msg.split(" ");
-    var cmd = bits[0].substring(1, bits[0].length);
-    switch (cmd) {
-        case "me":
-            console.log("/me command received from " + socket.user.nick + ": " + cmd);
-            var ann = msg.substring(msg.indexOf(' '), msg.length);
-            var item = {announce: ann, user: socket.user, when: currentTime()};
-            mq.publish(item);
-            break;
-        case "coffee":
-        case "foos":
-    }
-}
-
 function guid() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
       s4() + '-' + s4() + s4() + s4();
@@ -189,6 +207,7 @@ function guid() {
 function retrieveGravatar(email) {
     return gravatar.url("" + email, {s: '50', r: 'pg', d: 'retro'});
 }
+
 
 io.sockets.on('connection', function (socket) {
     // first send history
@@ -230,15 +249,7 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('msg', function (data) {
-        if (data && data.msg) {
-            var msg = replaceUrlWithHtmlLinks(data.msg);
-            if (msg.substring(0, 1) == '/') {
-                handleIrcCommand(socket, data);
-            } else {
-                var item = {msg: msg, user: socket.user, when: currentTime()};
-                mq.publish('msg', item);
-            }
-        }
+	addMsg(data.msg,socket.user);
     });
 
     socket.on('vote', function (data) {
