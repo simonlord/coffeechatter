@@ -28,7 +28,6 @@ var linkRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@
 
 var msgFilters = [];
 msgFilters.push(function(msgType, item, cb){
-    console.log("replaceLinks filter...");
     if(item.msg){
         var msg = replaceUrlWithHtmlLinks(item.msg);
         item.msg = msg;
@@ -37,14 +36,13 @@ msgFilters.push(function(msgType, item, cb){
 });
 
 msgFilters.push(function(msgType, item, cb){
-    console.log("irc command filter...");
     var msg = item.msg;
     if (msg && msg.substring(0, 1) == '/') {
 	    var bits = msg.split(" ");
 	    var cmd = bits[0].substring(1, bits[0].length);
 	    switch (cmd) {
 		case "me":
-		    console.log("/me command received from " + socket.user.nick + ": " + cmd);
+		    console.log("/me command received from " + item.user.nick + ": " + cmd);
 		    var ann = msg.substring(msg.indexOf(' '), msg.length);
 		    var annItem = {announce: ann, user: item.user, when: item.when};
 		    cb(null, msgType, annItem);
@@ -186,7 +184,10 @@ function replaceUrlWithHtmlLinks(text) {
 }
 
 function hasLink(text) {
-    return text.match(linkRegex) !== null;
+    if(text){
+        return text.match(linkRegex) !== null;
+    }
+    return false;
 }
 
 function extractRawLink(text) {
