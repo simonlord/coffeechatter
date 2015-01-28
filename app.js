@@ -36,6 +36,17 @@ msgFilters.push(function(msgType, item, cb){
 });
 
 msgFilters.push(function(msgType, item, cb){
+    if(item.msg && hasLink(item.msg)){    
+	var rawLink = extractRawLink(item.msg);
+	if(rawLink.match(/\.(gif|jpg|jpeg|tiff|png)$/i)){
+	  item.imageURL = rawLink;
+	  console.log("Got image link: " + item.imageURL);
+	}
+    }
+    cb(null, msgType, item);
+});
+
+msgFilters.push(function(msgType, item, cb){
     var msg = item.msg;
     if (msg && msg.substring(0, 1) == '/') {
 	    var bits = msg.split(" ");
