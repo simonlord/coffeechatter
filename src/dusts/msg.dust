@@ -10,6 +10,9 @@
         <p>
             {msg|s}
         </p>
+	{?imageURL}
+		<img src="{imageURL|s}" class="img-responsive"/>
+	{/imageURL}
       {/announce}
     </div>
   </div>
