@@ -13,6 +13,7 @@ var pubsub = require('pubsub');
 var request = require('request');
 var cheerio = require('cheerio');
 var async = require('async');
+var url = require('url');
 
 var app = express();
 
@@ -112,11 +113,15 @@ mq.subscribe(function (msgType, item) {
                 var rel = $(this).attr('rel');
                 if (rel.match(/icon/i) !== null) {
                     favIcon = $(this).attr('href');
-                    if(rel === 'icon'){
+		    if(favIcon.match(/^http/i) === null){
+		    	favIcon = url.resolve(rawLink, favIcon);
+		    }
+
+                    if(rel.toLowerCase() === 'icon'){
                         // if we get an exact match break free
                         return false;
                     }
-		    if(rel === 'shortcut icon'){
+		    if(rel.toLowerCase() === 'shortcut icon'){
 		        return false;
 		    }
                 }
