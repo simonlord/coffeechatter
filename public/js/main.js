@@ -9,7 +9,9 @@ commands:[
          { id: 4, name: "We are out of coffee", type: "stmt", class:"label-danger"},
          { id: 5, name: "Lunch?", type: "vote", class:"label-success", choices:['Yes','No']},
          { id: 6, name: "Foos?", type: "vote", class:"label-success", choices:['Yes','No']},
-         { id: 7, name: "Baristas?", type: "vote", class:"label-success", choices:['Yes','No']}
+         { id: 7, name: "Baristas?", type: "vote", class:"label-success", choices:['Yes','No']},
+         { id: 8, name: "We are running out of coffee!", type: "stmt", class:"label-info"},
+         { id: 9, name: "Bacon?", type: "vote", class:"label-success", choices:['Yes','No']}
          ]
 };
 
