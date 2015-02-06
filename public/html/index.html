@@ -4,7 +4,8 @@
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js"></script>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-  <script type="text/javascript" src="js/jquery.titlealert.min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js"></script>
+
   <script type="text/javascript" src="js/dust-core-2.2.0.js"></script>
   <script type="text/javascript" src="js/bootstrap/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/compiled/coffeecommand.js"></script>
@@ -59,7 +60,7 @@
       <div class="col-md-6">
         <form class="form-inline">
           <div class="form-group">
-            <input id="msgInput" style="width:400px" type="text" class="form-control input-sm"
+            <input id="msgInput" style="width:400px" type="text" class="form-control input-sm typeahead"
                    placeholder="Type your message here..." autofocus/>
           </div>
           <button type="button" class="btn btn-sm btn-warning" id="send">Send</button>
@@ -179,6 +180,49 @@
   };
 
   $.emoticons.define(definition);
+
+
+
+
+  var substringMatcher = function(strs) {
+    return function findMatches(q, cb) {
+      var matches, substrRegex;
+
+      // an array that will be populated with substring matches
+      matches = [];
+      if(q.match(/^\@/)) {
+        var usernames = [];
+        $('#users li').each(function () {
+          usernames.push($(this).text().trim());
+        });
+
+        // iterate through the pool of strings and for any string that
+        // contains the substring `q`, add it to the `matches` array
+        $.each(usernames, function (i, str) {
+          if (str.match(new RegExp(q.substr(1), 'i')) || q === '@') {
+            // the typeahead jQuery plugin expects suggestions to a
+            // JavaScript object, refer to typeahead docs for more info
+            matches.push({value: '@' + str});
+          }
+        });
+      }
+      cb(matches);
+    };
+  };
+
+
+
+  $('.typeahead').typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 1
+      },
+      {
+        name: 'states',
+        displayKey: 'value',
+        source: substringMatcher()
+      });
+
 </script>
 </body>
 </html>
