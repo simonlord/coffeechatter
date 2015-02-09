@@ -11,7 +11,9 @@
             {msg|s}
         </p>
 	{?imageURL}
-		<img src="{imageURL|s}" class="img-responsive"/>
+		<a href="{imageURL|s}" target="_blank">
+		    <img src="{imageURL|s}" class="img-responsive"/>
+		</a>
 	{/imageURL}
       {/announce}
     </div>
