@@ -12,3 +12,8 @@ input[type="text"]{
 .tt-dropdown-menu {
     background-color: hotpink;
 }
+
+
+.btn-default {
+	color:#fff;
+	}
